@@ -1,0 +1,55 @@
+{
+
+  "itemgroup.foxfurnace.furnace_blocks" : "FoxFurnace Blocks",
+
+  "item.foxfurnace.warden_heart" : "Warden Heart",
+
+  "block.foxfurnace.copper_furnace" : "Copper Furnace",
+  "block.foxfurnace.iron_furnace" : "Iron Furnace",
+  "block.foxfurnace.gold_furnace" : "Gold Furnace",
+  "block.foxfurnace.emerald_furnace" : "Emerald Furnace",
+  "block.foxfurnace.diamond_furnace" : "Diamond Furnace",
+  "block.foxfurnace.netherite_furnace" : "Netherite Furnace",
+
+  "tooltip.foxfurnace.speed": "Speed: %s of vanilla",
+  "tooltip.foxfurnace.xp": "To take xp %s on the furnace",
+
+  "text.autoconfig.foxfurnace.title" : "FoxFurnace Config",
+
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeCopper": "Speed Copper Furnace",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeCopper.@Tooltip[0]": "In a range from 0 to 199, the speed of the copper furnace increases with increasing value.",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeCopper.@Tooltip[1]": "Min = 1",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeCopper.@Tooltip[2]": "Max = 199",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeCopper.@Tooltip[3]": "Default = 20",
+
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeIron": "Speed Iron Furnace",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeIron.@Tooltip[0]": "In a range from 0 to 199, the speed of the iron furnace increases with increasing value.",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeIron.@Tooltip[1]": "Min = 1",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeIron.@Tooltip[2]": "Max = 199",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeIron.@Tooltip[3]": "Default = 40",
+
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeGold": "Speed Gold Furnace",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeGold.@Tooltip[0]": "In a range from 0 to 199, the speed of the gold furnace increases with increasing value.",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeGold.@Tooltip[1]": "Min = 1",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeGold.@Tooltip[2]": "Max = 199",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeGold.@Tooltip[3]": "Default = 80",
+
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeEmerald": "Speed Emerald Furnace",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeEmerald.@Tooltip[0]": "In a range from 0 to 199, the speed of the emerald furnace increases with increasing value.",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeEmerald.@Tooltip[1]": "Min = 1",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeEmerald.@Tooltip[2]": "Max = 199",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeEmerald.@Tooltip[3]": "Default = 100",
+
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeDiamond": "Speed Diamond Furnace",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeDiamond.@Tooltip[0]": "In a range from 0 to 199, the speed of the diamond furnace increases with increasing value.",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeDiamond.@Tooltip[1]": "Min = 1",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeDiamond.@Tooltip[2]": "Max = 199",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeDiamond.@Tooltip[3]": "Default = 130",
+
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeNetherite": "Speed Netherite Furnace",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeNetherite.@Tooltip[0]": "In a range from 0 to 199, the speed of the netherite furnace increases with increasing value.",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeNetherite.@Tooltip[1]": "Min = 1",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeNetherite.@Tooltip[2]": "Max = 199",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeNetherite.@Tooltip[3]": "Default = 160"
+
+}

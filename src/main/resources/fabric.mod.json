@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "foxfurnace",
+	"version": "${version}",
+	"name": "FoxFurnace",
+	"description": "FoxFurnace adds various furnace tier!",
+	"authors": [
+		"Piofox4"
+	],
+	"contact": {
+		"homepage": "https://github.com/Piofox4",
+		"sources": "https://github.com/Piofox4/FoxFurnace"
+	},
+	"license": "MIT",
+	"icon": "assets/foxfurnace/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.piofox4.foxfurnace.FoxFurnace"
+		],
+		"fabric-datagen": [
+			"net.piofox4.foxfurnace.FoxFurnaceDataGenerator"
+		],
+		"client": [
+			"net.piofox4.foxfurnace.FoxFurnaceClient"
+		],
+		"modmenu": [
+			"net.piofox4.foxfurnace.config.ConfigEntry"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*",
+		"cloth-config": ">=15.0.140"
+	},
+	"suggests": {
+		"modmenu": "*"
+	}
+}

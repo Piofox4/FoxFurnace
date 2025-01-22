@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:gold_block"
+    },
+    "F": {
+      "item": "foxfurnace:iron_furnace"
+    },
+    "I": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "pattern": [
+    "IBI",
+    "BFB",
+    "III"
+  ],
+  "result": {
+    "count": 1,
+    "id": "foxfurnace:gold_furnace"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:diamond_block"
+    },
+    "F": {
+      "item": "foxfurnace:emerald_furnace"
+    },
+    "I": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    "IBI",
+    "BFB",
+    "IBI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "foxfurnace:diamond_furnace"
+  }
+}

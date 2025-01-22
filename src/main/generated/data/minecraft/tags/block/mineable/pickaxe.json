@@ -1,0 +1,10 @@
+{
+  "values": [
+    "foxfurnace:copper_furnace",
+    "foxfurnace:iron_furnace",
+    "foxfurnace:gold_furnace",
+    "foxfurnace:emerald_furnace",
+    "foxfurnace:diamond_furnace",
+    "foxfurnace:netherite_furnace"
+  ]
+}

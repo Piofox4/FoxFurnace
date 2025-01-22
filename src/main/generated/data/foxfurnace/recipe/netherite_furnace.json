@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:netherite_block"
+    },
+    "F": {
+      "item": "foxfurnace:diamond_furnace"
+    },
+    "I": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "W": {
+      "item": "foxfurnace:warden_heart"
+    }
+  },
+  "pattern": [
+    "IBI",
+    "BFB",
+    "IWI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "foxfurnace:netherite_furnace"
+  }
+}

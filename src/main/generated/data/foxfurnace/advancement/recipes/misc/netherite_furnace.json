@@ -1,0 +1,65 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_diamond_furnace": {
+      "conditions": {
+        "items": [
+          {
+            "items": "foxfurnace:diamond_furnace"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_netherite_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:netherite_block"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_netherite_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:netherite_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "foxfurnace:netherite_furnace"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_warden_heart": {
+      "conditions": {
+        "items": [
+          {
+            "items": "foxfurnace:warden_heart"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_netherite_ingot",
+      "has_netherite_block",
+      "has_diamond_furnace",
+      "has_warden_heart"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "foxfurnace:netherite_furnace"
+    ]
+  }
+}

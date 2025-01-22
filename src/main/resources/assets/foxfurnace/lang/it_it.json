@@ -1,0 +1,54 @@
+{
+  "itemgroup.foxfurnace.furnace_blocks": "FoxFurnace Blocks",
+
+  "item.foxfurnace.warden_heart": "Cuore del warden",
+
+  "block.foxfurnace.copper_furnace": "Fornace di rame",
+  "block.foxfurnace.iron_furnace": "Fornace di ferro",
+  "block.foxfurnace.gold_furnace": "Fornace d'oro",
+  "block.foxfurnace.emerald_furnace": "Fornace di smeraldi",
+  "block.foxfurnace.diamond_furnace": "Fornace di diamanti",
+  "block.foxfurnace.netherite_furnace": "Fornace di netherite",
+
+  "tooltip.foxfurnace.speed": "Velocità: %s rispetto alla fornace vanilla",
+  "tooltip.foxfurnace.xp": "Per prendere xp %s sulla fornace",
+
+  "text.autoconfig.foxfurnace.title": "FoxFurnace Config",
+
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeCopper": "Velocità della forance di rame",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeCopper.@Tooltip[0]": "In un intervallo da 0 a 199, la velocità della fornace di rame aumenta con l'aumentare del valore.",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeCopper.@Tooltip[1]": "Minimo = 1",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeCopper.@Tooltip[2]": "Massimo = 199",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeCopper.@Tooltip[3]": "Valore predefinito = 20",
+
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeIron": "Velocità della fornace di ferro",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeIron.@Tooltip[0]": "In un intervallo da 0 a 199, la velocità della fornace di ferro aumenta con l'aumentare del valore.",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeIron.@Tooltip[1]": "Minimo = 1",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeIron.@Tooltip[2]": "Massimo = 199",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeIron.@Tooltip[3]": "Valore predefinito = 40",
+
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeGold": "Velocità della fornace d'oro",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeGold.@Tooltip[0]": "In un intervallo da 0 a 199, la velocità della fornace d'oro aumenta con l'aumentare del valore.",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeGold.@Tooltip[1]": "Minimo = 1",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeGold.@Tooltip[2]": "Massimo = 199",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeGold.@Tooltip[3]": "Valore predefinito = 80",
+
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeEmerald": "Velocità della fornace di smeraldo",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeEmerald.@Tooltip[0]": "In un intervallo da 0 a 199, la velocità della fornace di smeraldo aumenta con l'aumentare del valore.",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeEmerald.@Tooltip[1]": "Minimo = 1",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeEmerald.@Tooltip[2]": "Massimo = 199",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeEmerald.@Tooltip[3]": "Valore predefinito = 100",
+
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeDiamond": "Velocità della fornace di diamante",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeDiamond.@Tooltip[0]": "In un intervallo da 0 a 199, la velocità della fornace di diamante aumenta con l'aumentare del valore.",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeDiamond.@Tooltip[1]": "Minimo = 1",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeDiamond.@Tooltip[2]": "Massimo = 199",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeDiamond.@Tooltip[3]": "Valore predefinito = 130",
+
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeNetherite": "Velocità della fornace di netherite",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeNetherite.@Tooltip[0]": "In un intervallo da 0 a 199, la velocità della fornace di netherite aumenta con l'aumentare del valore.",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeNetherite.@Tooltip[1]": "Minimo = 1",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeNetherite.@Tooltip[2]": "Massimo = 199",
+  "text.autoconfig.foxfurnace.option.minusTotalCookTimeNetherite.@Tooltip[3]": "Valore predefinito = 160"
+
+}
