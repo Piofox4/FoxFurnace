@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.SharedConstants;
 import net.minecraft.block.AbstractFurnaceBlock;
 import net.minecraft.block.Block;
@@ -65,7 +66,10 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
     private boolean isUpdating = false;
     @Nullable
     protected final PropertyDelegate propertyDelegate;
+
+    // Cached fuel time map - uses volatile for thread safety
     private static volatile Map<Item, Integer> fuelTimes;
+
     private final Object2IntOpenHashMap<Identifier> recipesUsed;
     private final RecipeManager.MatchGetter<SingleStackRecipeInput, ? extends AbstractCookingRecipe> matchGetter;
 
@@ -73,6 +77,7 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
     public Text getContainerName() {
         return Text.translatable("container.furnace");
     }
+
     @Override
     protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
         return new FurnaceScreenHandler(syncId, playerInventory, this, this.propertyDelegate);
@@ -100,7 +105,6 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
                     case 2 -> AbstractGenericFurnaceBlockEntity.this.cookTime = value;
                     case 3 -> AbstractGenericFurnaceBlockEntity.this.cookTimeTotal = value;
                 }
-
             }
 
             public int size() {
@@ -111,97 +115,116 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
         this.matchGetter = RecipeManager.createCachedMatchGetter(recipeType);
     }
 
+    /**
+     * Clears the cached fuel times map, forcing it to be rebuilt on next access
+     */
     public static void clearFuelTimes() {
         fuelTimes = null;
     }
 
+    /**
+     * Creates a comprehensive fuel time map that includes all registered fuels
+     * This method is completely generic and automatically detects:
+     * - All vanilla Minecraft fuels
+     * - All mod-added fuels registered through Fabric's FuelRegistry
+     *
+     * @return Map containing all fuel items and their burn times in ticks
+     */
     public static Map<Item, Integer> createFuelTimeMap() {
         Map<Item, Integer> map = fuelTimes;
         if (map != null) {
             return map;
         } else {
             Map<Item, Integer> map2 = Maps.newLinkedHashMap();
-            addFuel(map2, Items.LAVA_BUCKET, 20000);
-            addFuel(map2, Blocks.COAL_BLOCK, 16000);
-            addFuel(map2, Items.BLAZE_ROD, 2400);
-            addFuel(map2, Items.COAL, 1600);
-            addFuel(map2, Items.CHARCOAL, 1600);
-            addFuel(map2, ItemTags.LOGS, 300);
-            addFuel(map2, ItemTags.BAMBOO_BLOCKS, 300);
-            addFuel(map2, ItemTags.PLANKS, 300);
-            addFuel(map2, Blocks.BAMBOO_MOSAIC, 300);
-            addFuel(map2, ItemTags.WOODEN_STAIRS, 300);
-            addFuel(map2, Blocks.BAMBOO_MOSAIC_STAIRS, 300);
-            addFuel(map2, ItemTags.WOODEN_SLABS, 150);
-            addFuel(map2, Blocks.BAMBOO_MOSAIC_SLAB, 150);
-            addFuel(map2, ItemTags.WOODEN_TRAPDOORS, 300);
-            addFuel(map2, ItemTags.WOODEN_PRESSURE_PLATES, 300);
-            addFuel(map2, ItemTags.WOODEN_FENCES, 300);
-            addFuel(map2, ItemTags.FENCE_GATES, 300);
-            addFuel(map2, Blocks.NOTE_BLOCK, 300);
-            addFuel(map2, Blocks.BOOKSHELF, 300);
-            addFuel(map2, Blocks.CHISELED_BOOKSHELF, 300);
-            addFuel(map2, Blocks.LECTERN, 300);
-            addFuel(map2, Blocks.JUKEBOX, 300);
-            addFuel(map2, Blocks.CHEST, 300);
-            addFuel(map2, Blocks.TRAPPED_CHEST, 300);
-            addFuel(map2, Blocks.CRAFTING_TABLE, 300);
-            addFuel(map2, Blocks.DAYLIGHT_DETECTOR, 300);
-            addFuel(map2, ItemTags.BANNERS, 300);
-            addFuel(map2, Items.BOW, 300);
-            addFuel(map2, Items.FISHING_ROD, 300);
-            addFuel(map2, Blocks.LADDER, 300);
-            addFuel(map2, ItemTags.SIGNS, 200);
-            addFuel(map2, ItemTags.HANGING_SIGNS, 800);
-            addFuel(map2, Items.WOODEN_SHOVEL, 200);
-            addFuel(map2, Items.WOODEN_SWORD, 200);
-            addFuel(map2, Items.WOODEN_HOE, 200);
-            addFuel(map2, Items.WOODEN_AXE, 200);
-            addFuel(map2, Items.WOODEN_PICKAXE, 200);
-            addFuel(map2, ItemTags.WOODEN_DOORS, 200);
-            addFuel(map2, ItemTags.BOATS, 1200);
-            addFuel(map2, ItemTags.WOOL, 100);
-            addFuel(map2, ItemTags.WOODEN_BUTTONS, 100);
-            addFuel(map2, Items.STICK, 100);
-            addFuel(map2, ItemTags.SAPLINGS, 100);
-            addFuel(map2, Items.BOWL, 100);
-            addFuel(map2, ItemTags.WOOL_CARPETS, 67);
-            addFuel(map2, Blocks.DRIED_KELP_BLOCK, 4001);
-            addFuel(map2, Items.CROSSBOW, 300);
-            addFuel(map2, Blocks.BAMBOO, 50);
-            addFuel(map2, Blocks.DEAD_BUSH, 100);
-            addFuel(map2, Blocks.SCAFFOLDING, 50);
-            addFuel(map2, Blocks.LOOM, 300);
-            addFuel(map2, Blocks.BARREL, 300);
-            addFuel(map2, Blocks.CARTOGRAPHY_TABLE, 300);
-            addFuel(map2, Blocks.FLETCHING_TABLE, 300);
-            addFuel(map2, Blocks.SMITHING_TABLE, 300);
-            addFuel(map2, Blocks.COMPOSTER, 300);
-            addFuel(map2, Blocks.AZALEA, 100);
-            addFuel(map2, Blocks.FLOWERING_AZALEA, 100);
-            addFuel(map2, Blocks.MANGROVE_ROOTS, 300);
+
+            // Load all registered fuels (vanilla + mods) from Fabric's FuelRegistry
+            // This is completely generic and works with any registered fuel
+            addAllRegisteredFuels(map2);
+
             fuelTimes = map2;
             return map2;
         }
     }
 
+    /**
+     * Adds all fuels registered in Fabric's FuelRegistry to the provided map
+     * This includes both vanilla fuels and any fuels added by mods
+     *
+     * @param fuelMap The map to populate with fuel items and their burn times
+     */
+    private static void addAllRegisteredFuels(Map<Item, Integer> fuelMap) {
+        try {
+            // Iterate through all items in the item registry
+            for (Item item : Registries.ITEM) {
+                // Check if the item is registered as fuel in FuelRegistry
+                Integer fuelTime = FuelRegistry.INSTANCE.get(item);
+                if (fuelTime != null && fuelTime > 0) {
+                    // Respect the non-flammable wood rule
+                    if (!isNonFlammableWood(item)) {
+                        fuelMap.put(item, fuelTime);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Fallback to essential vanilla fuels in case of error
+            addVanillaFuelsFallback(fuelMap);
+        }
+    }
+
+    /**
+     * Fallback method to add essential vanilla fuels in case FuelRegistry access fails
+     * This ensures the furnace can still function with basic fuels
+     *
+     * @param fuelMap The map to populate with essential fuel items
+     */
+    private static void addVanillaFuelsFallback(Map<Item, Integer> fuelMap) {
+        // Only the most essential fuels as fallback
+        addFuel(fuelMap, Items.LAVA_BUCKET, 20000);
+        addFuel(fuelMap, Blocks.COAL_BLOCK, 16000);
+        addFuel(fuelMap, Items.BLAZE_ROD, 2400);
+        addFuel(fuelMap, Items.COAL, 1600);
+        addFuel(fuelMap, Items.CHARCOAL, 1600);
+        addFuel(fuelMap, ItemTags.LOGS, 300);
+        addFuel(fuelMap, ItemTags.PLANKS, 300);
+        addFuel(fuelMap, Items.STICK, 100);
+    }
+
+    /**
+     * Checks if an item is non-flammable wood (like crimson/warped wood)
+     *
+     * @param item The item to check
+     * @return true if the item is non-flammable wood, false otherwise
+     */
     @SuppressWarnings("deprecation")
     private static boolean isNonFlammableWood(Item item) {
         return item.getRegistryEntry().isIn(ItemTags.NON_FLAMMABLE_WOOD);
     }
 
+    /**
+     * Adds fuel items from a tag to the fuel map
+     *
+     * @param fuelTimes The fuel map to populate
+     * @param tag The item tag containing fuel items
+     * @param fuelTime The burn time for items in this tag
+     */
     private static void addFuel(Map<Item, Integer> fuelTimes, TagKey<Item> tag, int fuelTime) {
-        Iterator var3 = Registries.ITEM.iterateEntries(tag).iterator();
+        Iterator<RegistryEntry<Item>> var3 = Registries.ITEM.iterateEntries(tag).iterator();
 
         while(var3.hasNext()) {
-            RegistryEntry<Item> registryEntry = (RegistryEntry)var3.next();
+            RegistryEntry<Item> registryEntry = var3.next();
             if (!isNonFlammableWood(registryEntry.value())) {
                 fuelTimes.put(registryEntry.value(), fuelTime);
             }
         }
-
     }
 
+    /**
+     * Adds a specific fuel item to the fuel map
+     *
+     * @param fuelTimes The fuel map to populate
+     * @param item The item to add as fuel
+     * @param fuelTime The burn time for this item
+     */
     private static void addFuel(Map<Item, Integer> fuelTimes, ItemConvertible item, int fuelTime) {
         Item item2 = item.asItem();
         if (isNonFlammableWood(item2)) {
@@ -222,13 +245,12 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
         this.cookTimeTotal = nbt.getShort("CookTimeTotal");
         this.fuelTime = this.getFuelTime(this.inventory.get(1));
         NbtCompound nbtCompound = nbt.getCompound("RecipesUsed");
-        Iterator var4 = nbtCompound.getKeys().iterator();
+        Iterator<String> var4 = nbtCompound.getKeys().iterator();
 
         while(var4.hasNext()) {
-            String string = (String)var4.next();
+            String string = var4.next();
             this.recipesUsed.put(Identifier.of(string), nbtCompound.getInt(string));
         }
-
     }
 
     protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
@@ -244,16 +266,36 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
         nbt.put("RecipesUsed", nbtCompound);
     }
 
+    /**
+     * Checks if the furnace is currently burning fuel
+     *
+     * @return true if burn time is greater than 0
+     */
     private boolean isBurning() {
         return this.burnTime > 0;
     }
 
+    /**
+     * Abstract method to get the current configuration value for cook time reduction
+     * This should be implemented by subclasses to provide their specific config value
+     *
+     * @return The amount to subtract from default cook time
+     */
     protected abstract int getCurrentConfigValue();
 
+    /**
+     * Main tick method that handles furnace logic
+     * This method manages fuel consumption, cooking progress, and config updates
+     *
+     * @param world The world the furnace is in
+     * @param pos The position of the furnace
+     * @param state The block state of the furnace
+     * @param blockEntity The furnace block entity instance
+     */
     public static void tick(World world, BlockPos pos, BlockState state, AbstractGenericFurnaceBlockEntity blockEntity) {
-
         int newMinusCookTimeTotal = blockEntity.getCurrentConfigValue();
 
+        // Check if config has changed and update accordingly
         if (blockEntity.minusCookTimeTotal != newMinusCookTimeTotal) {
             blockEntity.isUpdating = true;
             blockEntity.updateCookTime(newMinusCookTimeTotal);
@@ -261,6 +303,7 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
             return;
         }
 
+        // Handle post-update tick adjustment
         if (blockEntity.isUpdating) {
             if (blockEntity.burnTime > 0) {
                 blockEntity.burnTime += 1;
@@ -268,87 +311,101 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
             blockEntity.isUpdating = false;
         }
 
-        boolean bl = blockEntity.isBurning();
-        boolean bl2 = false;
+        boolean wasLit = blockEntity.isBurning();
+        boolean dirty = false;
 
+        // Consume fuel
         if (blockEntity.isBurning()) {
             --blockEntity.burnTime;
         }
 
-        ItemStack itemStack = blockEntity.inventory.get(1);
-        ItemStack itemStack2 = blockEntity.inventory.get(0);
-        boolean bl3 = !itemStack2.isEmpty();
-        boolean bl4 = !itemStack.isEmpty();
-        if (blockEntity.isBurning() || bl4 && bl3) {
+        ItemStack fuelStack = blockEntity.inventory.get(1);
+        ItemStack inputStack = blockEntity.inventory.get(0);
+        boolean hasInput = !inputStack.isEmpty();
+        boolean hasFuel = !fuelStack.isEmpty();
+
+        if (blockEntity.isBurning() || hasFuel && hasInput) {
             RecipeEntry recipeEntry;
-            if (bl3) {
-                recipeEntry = blockEntity.matchGetter.getFirstMatch(new SingleStackRecipeInput(itemStack2), world).orElse(null);
+            if (hasInput) {
+                recipeEntry = blockEntity.matchGetter.getFirstMatch(new SingleStackRecipeInput(inputStack), world).orElse(null);
             } else {
                 recipeEntry = null;
             }
 
-            int i = blockEntity.getMaxCountPerStack();
-            if (!blockEntity.isBurning() && canAcceptRecipeOutput(world.getRegistryManager(), recipeEntry, blockEntity.inventory, i)) {
-                blockEntity.burnTime = blockEntity.getFuelTime(itemStack);
+            int maxStackSize = blockEntity.getMaxCountPerStack();
+
+            // Try to start burning if not already burning and can accept recipe output
+            if (!blockEntity.isBurning() && canAcceptRecipeOutput(world.getRegistryManager(), recipeEntry, blockEntity.inventory, maxStackSize)) {
+                blockEntity.burnTime = blockEntity.getFuelTime(fuelStack);
                 blockEntity.fuelTime = blockEntity.burnTime;
                 if (blockEntity.isBurning()) {
-                    bl2 = true;
-                    if (bl4) {
-                        Item item = itemStack.getItem();
-                        itemStack.decrement(1);
-                        if (itemStack.isEmpty()) {
-                            Item item2 = item.getRecipeRemainder();
-                            blockEntity.inventory.set(1, item2 == null ? ItemStack.EMPTY : new ItemStack(item2));
+                    dirty = true;
+                    if (hasFuel) {
+                        Item fuelItem = fuelStack.getItem();
+                        fuelStack.decrement(1);
+                        if (fuelStack.isEmpty()) {
+                            Item remainder = fuelItem.getRecipeRemainder();
+                            blockEntity.inventory.set(1, remainder == null ? ItemStack.EMPTY : new ItemStack(remainder));
                         }
                     }
                 }
             }
 
-            if (blockEntity.isBurning() && canAcceptRecipeOutput(world.getRegistryManager(), recipeEntry, blockEntity.inventory, i)) {
+            // Cook the item if burning and can accept output
+            if (blockEntity.isBurning() && canAcceptRecipeOutput(world.getRegistryManager(), recipeEntry, blockEntity.inventory, maxStackSize)) {
                 ++blockEntity.cookTime;
                 if (blockEntity.cookTime == blockEntity.cookTimeTotal) {
                     blockEntity.cookTime = 0;
                     blockEntity.cookTimeTotal = getCookTime(world, blockEntity) - blockEntity.minusCookTimeTotal;
-                    if (craftRecipe(world.getRegistryManager(), recipeEntry, blockEntity.inventory, i)) {
+                    if (craftRecipe(world.getRegistryManager(), recipeEntry, blockEntity.inventory, maxStackSize)) {
                         blockEntity.setLastRecipe(recipeEntry);
                     }
-
-                    bl2 = true;
+                    dirty = true;
                 }
             } else {
                 blockEntity.cookTime = 0;
             }
         } else if (!blockEntity.isBurning() && blockEntity.cookTime > 0) {
+            // Slowly decrease cook time when not burning
             blockEntity.cookTime = MathHelper.clamp(blockEntity.cookTime - 2, 0, blockEntity.cookTimeTotal);
         }
 
-        if (bl != blockEntity.isBurning()) {
-            bl2 = true;
+        // Update block state if lit status changed
+        if (wasLit != blockEntity.isBurning()) {
+            dirty = true;
             state = state.with(AbstractFurnaceBlock.LIT, blockEntity.isBurning());
             world.setBlockState(pos, state, Block.NOTIFY_ALL);
         }
 
-        if (bl2) {
+        if (dirty) {
             markDirty(world, pos, state);
         }
-
     }
 
+    /**
+     * Checks if the furnace can accept the output of a recipe
+     *
+     * @param registryManager The dynamic registry manager
+     * @param recipe The recipe to check
+     * @param slots The inventory slots
+     * @param count The max count per stack
+     * @return true if the recipe output can be accepted
+     */
     private static boolean canAcceptRecipeOutput(DynamicRegistryManager registryManager, @Nullable RecipeEntry<?> recipe, DefaultedList<ItemStack> slots, int count) {
         if (!slots.get(0).isEmpty() && recipe != null) {
-            ItemStack itemStack = recipe.value().getResult(registryManager);
-            if (itemStack.isEmpty()) {
+            ItemStack recipeOutput = recipe.value().getResult(registryManager);
+            if (recipeOutput.isEmpty()) {
                 return false;
             } else {
-                ItemStack itemStack2 = slots.get(2);
-                if (itemStack2.isEmpty()) {
+                ItemStack outputSlot = slots.get(2);
+                if (outputSlot.isEmpty()) {
                     return true;
-                } else if (!ItemStack.areItemsAndComponentsEqual(itemStack2, itemStack)) {
+                } else if (!ItemStack.areItemsAndComponentsEqual(outputSlot, recipeOutput)) {
                     return false;
-                } else if (itemStack2.getCount() < count && itemStack2.getCount() < itemStack2.getMaxCount()) {
+                } else if (outputSlot.getCount() < count && outputSlot.getCount() < outputSlot.getMaxCount()) {
                     return true;
                 } else {
-                    return itemStack2.getCount() < itemStack.getMaxCount();
+                    return outputSlot.getCount() < recipeOutput.getMaxCount();
                 }
             }
         } else {
@@ -356,28 +413,45 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
         }
     }
 
+    /**
+     * Crafts a recipe and updates the inventory
+     *
+     * @param registryManager The dynamic registry manager
+     * @param recipe The recipe to craft
+     * @param slots The inventory slots
+     * @param count The max count per stack
+     * @return true if the recipe was successfully crafted
+     */
     private static boolean craftRecipe(DynamicRegistryManager registryManager, @Nullable RecipeEntry<?> recipe, DefaultedList<ItemStack> slots, int count) {
         if (recipe != null && canAcceptRecipeOutput(registryManager, recipe, slots, count)) {
-            ItemStack itemStack = slots.get(0);
-            ItemStack itemStack2 = recipe.value().getResult(registryManager);
-            ItemStack itemStack3 = slots.get(2);
-            if (itemStack3.isEmpty()) {
-                slots.set(2, itemStack2.copy());
-            } else if (ItemStack.areItemsAndComponentsEqual(itemStack3, itemStack2)) {
-                itemStack3.increment(1);
+            ItemStack inputStack = slots.get(0);
+            ItemStack recipeOutput = recipe.value().getResult(registryManager);
+            ItemStack outputStack = slots.get(2);
+
+            if (outputStack.isEmpty()) {
+                slots.set(2, recipeOutput.copy());
+            } else if (ItemStack.areItemsAndComponentsEqual(outputStack, recipeOutput)) {
+                outputStack.increment(1);
             }
 
-            if (itemStack.isOf(Blocks.WET_SPONGE.asItem()) && !slots.get(1).isEmpty() && slots.get(1).isOf(Items.BUCKET)) {
+            // Special case for wet sponge + bucket = water bucket
+            if (inputStack.isOf(Blocks.WET_SPONGE.asItem()) && !slots.get(1).isEmpty() && slots.get(1).isOf(Items.BUCKET)) {
                 slots.set(1, new ItemStack(Items.WATER_BUCKET));
             }
 
-            itemStack.decrement(1);
+            inputStack.decrement(1);
             return true;
         } else {
             return false;
         }
     }
 
+    /**
+     * Gets the fuel time for an item stack, adjusted by furnace speed
+     *
+     * @param fuel The fuel item stack
+     * @return The adjusted burn time in ticks
+     */
     protected int getFuelTime(ItemStack fuel) {
         if (fuel.isEmpty()) {
             return 0;
@@ -388,16 +462,30 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
             if (vanillaFuelTime == 0)
                 return 0;
 
+            // Adjust fuel time based on furnace speed configuration
             return (int)(vanillaFuelTime * (((float) 200 - this.minusCookTimeTotal) / 200.0f));
         }
     }
 
+    /**
+     * Gets the cook time for the current recipe
+     *
+     * @param world The world
+     * @param furnace The furnace instance
+     * @return The cook time in ticks
+     */
     private static int getCookTime(World world, AbstractGenericFurnaceBlockEntity furnace) {
         SingleStackRecipeInput singleStackRecipeInput = new SingleStackRecipeInput(furnace.getStack(0));
         return furnace.matchGetter.getFirstMatch(singleStackRecipeInput, world).map((recipe) ->
                 recipe.value().getCookingTime()).orElse(200);
     }
 
+    /**
+     * Checks if an item stack can be used as fuel
+     *
+     * @param stack The item stack to check
+     * @return true if the stack can be used as fuel
+     */
     public static boolean canUseAsFuel(ItemStack stack) {
         return createFuelTimeMap().containsKey(stack.getItem());
     }
@@ -424,18 +512,12 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
 
     @Override
     public boolean isEmpty() {
-        Iterator var1 = this.inventory.iterator();
-
-        ItemStack itemStack;
-        do {
-            if (!var1.hasNext()) {
-                return true;
+        for (ItemStack itemStack : this.inventory) {
+            if (!itemStack.isEmpty()) {
+                return false;
             }
-
-            itemStack = (ItemStack)var1.next();
-        } while(itemStack.isEmpty());
-
-        return false;
+        }
+        return true;
     }
 
     public int size() {
@@ -451,16 +533,15 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
     }
 
     public void setStack(int slot, ItemStack stack) {
-        ItemStack itemStack = this.inventory.get(slot);
-        boolean bl = !stack.isEmpty() && ItemStack.areItemsAndComponentsEqual(itemStack, stack);
+        ItemStack currentStack = this.inventory.get(slot);
+        boolean stacksMatch = !stack.isEmpty() && ItemStack.areItemsAndComponentsEqual(currentStack, stack);
         this.inventory.set(slot, stack);
         stack.capCount(this.getMaxCount(stack));
-        if (slot == 0 && !bl) {
+        if (slot == 0 && !stacksMatch) {
             this.cookTimeTotal = getCookTime(this.world, this) - this.minusCookTimeTotal;
             this.cookTime = 0;
             this.markDirty();
         }
-
     }
 
     @Override
@@ -486,12 +567,13 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
     @Override
     public boolean isValid(int slot, ItemStack stack) {
         if (slot == 2) {
-            return false;
+            return false; // Output slot - no insertion allowed
         } else if (slot != 1) {
-            return true;
+            return true; // Input slot - accept any item
         } else {
-            ItemStack itemStack = this.inventory.get(1);
-            return canUseAsFuel(stack) || stack.isOf(Items.BUCKET) && !itemStack.isOf(Items.BUCKET);
+            // Fuel slot - only accept fuel items or buckets
+            ItemStack currentFuel = this.inventory.get(1);
+            return canUseAsFuel(stack) || stack.isOf(Items.BUCKET) && !currentFuel.isOf(Items.BUCKET);
         }
     }
 
@@ -500,7 +582,6 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
             Identifier identifier = recipe.id();
             this.recipesUsed.addTo(identifier, 1);
         }
-
     }
 
     @Override
@@ -518,12 +599,16 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
     public void unlockLastRecipe(PlayerEntity player, List<ItemStack> ingredients) {
     }
 
-
+    /**
+     * Drops experience orbs for recipes used and unlocks recipes for the player
+     *
+     * @param player The player to grant experience and unlock recipes for
+     */
     public void dropExperienceForRecipesUsed(ServerPlayerEntity player) {
-        List<RecipeEntry<?>> list = this.getRecipesUsedAndDropExperience(player.getServerWorld(), player.getPos());
-        player.unlockRecipes(list);
+        List<RecipeEntry<?>> recipes = this.getRecipesUsedAndDropExperience(player.getServerWorld(), player.getPos());
+        player.unlockRecipes(recipes);
 
-        for (RecipeEntry<?> recipeEntry : list) {
+        for (RecipeEntry<?> recipeEntry : recipes) {
             if (recipeEntry != null) {
                 player.onRecipeCrafted(recipeEntry, this.inventory);
             }
@@ -532,61 +617,82 @@ public abstract class AbstractGenericFurnaceBlockEntity extends LockableContaine
         this.recipesUsed.clear();
     }
 
+    /**
+     * Gets all recipes used and drops experience orbs at the specified position
+     *
+     * @param world The server world
+     * @param pos The position to drop experience orbs
+     * @return List of recipe entries that were used
+     */
     public List<RecipeEntry<?>> getRecipesUsedAndDropExperience(ServerWorld world, Vec3d pos) {
-        List<RecipeEntry<?>> list = Lists.newArrayList();
-        ObjectIterator<Object2IntMap.Entry<Identifier>> var4 = this.recipesUsed.object2IntEntrySet().iterator();
+        List<RecipeEntry<?>> recipes = Lists.newArrayList();
+        ObjectIterator<Object2IntMap.Entry<Identifier>> iterator = this.recipesUsed.object2IntEntrySet().iterator();
 
-        while(var4.hasNext()) {
-            Object2IntMap.Entry<Identifier> entry = (Object2IntMap.Entry)var4.next();
+        while(iterator.hasNext()) {
+            Object2IntMap.Entry<Identifier> entry = iterator.next();
             world.getRecipeManager().get(entry.getKey()).ifPresent((recipe) -> {
-                list.add(recipe);
+                recipes.add(recipe);
                 dropExperience(world, pos, entry.getIntValue(), ((AbstractCookingRecipe)recipe.value()).getExperience());
             });
         }
 
-        return list;
+        return recipes;
     }
 
+    /**
+     * Drops experience orbs at the specified position
+     *
+     * @param world The server world
+     * @param pos The position to drop experience
+     * @param multiplier The number of times the recipe was used
+     * @param experience The experience per recipe use
+     */
     private static void dropExperience(ServerWorld world, Vec3d pos, int multiplier, float experience) {
-        int i = MathHelper.floor((float)multiplier * experience);
-        float f = MathHelper.fractionalPart((float)multiplier * experience);
-        if (f != 0.0F && Math.random() < (double)f) {
-            ++i;
+        int totalExperience = MathHelper.floor((float)multiplier * experience);
+        float fractionalPart = MathHelper.fractionalPart((float)multiplier * experience);
+        if (fractionalPart != 0.0F && Math.random() < (double)fractionalPart) {
+            ++totalExperience;
         }
 
-        ExperienceOrbEntity.spawn(world, pos, i);
+        ExperienceOrbEntity.spawn(world, pos, totalExperience);
     }
 
     @Override
     public void provideRecipeInputs(RecipeMatcher finder) {
-
         for (ItemStack itemStack : this.inventory) {
             finder.addInput(itemStack);
         }
     }
 
+    /**
+     * Updates cook times when furnace speed configuration changes
+     * This method preserves cooking progress and fuel remaining percentages
+     *
+     * @param newMinusCookTime The new cook time reduction value
+     */
     public void updateCookTime(int newMinusCookTime) {
-
+        // Calculate current cooking progress percentage
         float cookProgressPercentage = 0;
         if (this.cookTimeTotal > 0) {
             cookProgressPercentage = (float)this.cookTime / this.cookTimeTotal;
         }
 
-
+        // Calculate remaining fuel percentage
         float fuelRemainingPercentage = 0;
         if (this.fuelTime > 0) {
             fuelRemainingPercentage = (float)this.burnTime / this.fuelTime;
         }
 
-
+        // Calculate speed ratio for fuel adjustment
         float speedRatio = (float)(DEFAULT_COOK_TIME - newMinusCookTime) / this.cookTimeTotal;
 
-
+        // Update cook time total
         this.cookTimeTotal = DEFAULT_COOK_TIME - newMinusCookTime;
 
-
+        // Preserve cooking progress
         this.cookTime = Math.round(cookProgressPercentage * this.cookTimeTotal);
 
+        // Adjust fuel times to maintain balance
         if (this.fuelTime > 0) {
             this.fuelTime = Math.round(this.fuelTime * speedRatio);
             this.burnTime = Math.round(this.fuelTime * fuelRemainingPercentage);
