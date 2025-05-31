@@ -12,7 +12,6 @@
   "block.foxfurnace.netherite_furnace" : "Netherite Furnace",
 
   "tooltip.foxfurnace.speed": "Speed: %s of vanilla",
-  "tooltip.foxfurnace.xp": "To take xp %s on the furnace",
 
   "text.autoconfig.foxfurnace.title" : "FoxFurnace Config",
 
@@ -51,5 +50,4 @@
   "text.autoconfig.foxfurnace.option.minusTotalCookTimeNetherite.@Tooltip[1]": "Min = 1",
   "text.autoconfig.foxfurnace.option.minusTotalCookTimeNetherite.@Tooltip[2]": "Max = 199",
   "text.autoconfig.foxfurnace.option.minusTotalCookTimeNetherite.@Tooltip[3]": "Default = 160"
-
 }

@@ -1,23 +1,25 @@
 package net.piofox4.foxfurnace.block.entity;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.screen.FurnaceScreenHandler;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.piofox4.foxfurnace.block.ModBlocks;
-import net.piofox4.foxfurnace.util.AbstractGenericFurnaceBlockEntity;
-import net.piofox4.foxfurnace.util.Ref;
 
-public class IronFurnaceBlockEntity extends AbstractGenericFurnaceBlockEntity {
+public class IronFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
 
     public IronFurnaceBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlocks.IRON_FURNACE_ENTITY_TYPE, pos, state, RecipeType.SMELTING, Ref.minusTotalCookTimeIron);
+        super(ModBlocks.IRON_FURNACE_ENTITY_TYPE, pos, state, RecipeType.SMELTING);
     }
 
     public static <T extends BlockEntity> void tick(World world, BlockPos blockPos, BlockState state, T t) {
-        AbstractGenericFurnaceBlockEntity.tick(world,blockPos,state,(IronFurnaceBlockEntity)t);
+        AbstractFurnaceBlockEntity.tick(world,blockPos,state,(IronFurnaceBlockEntity)t);
     }
 
     @Override
@@ -26,7 +28,7 @@ public class IronFurnaceBlockEntity extends AbstractGenericFurnaceBlockEntity {
     }
 
     @Override
-    protected int getCurrentConfigValue() {
-        return Ref.minusTotalCookTimeIron;
+    protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
+        return new FurnaceScreenHandler(syncId,playerInventory,this,this.propertyDelegate);
     }
 }

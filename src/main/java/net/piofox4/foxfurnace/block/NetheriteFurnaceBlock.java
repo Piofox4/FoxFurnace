@@ -1,6 +1,7 @@
 package net.piofox4.foxfurnace.block;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.block.AbstractFurnaceBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -14,25 +15,19 @@ import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import net.piofox4.foxfurnace.FoxFurnace;
 import net.piofox4.foxfurnace.block.entity.NetheriteFurnaceBlockEntity;
-import net.piofox4.foxfurnace.util.AbstractGenericFurnaceBlock;
 import net.piofox4.foxfurnace.util.Ref;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class NetheriteFurnaceBlock extends AbstractGenericFurnaceBlock {
+public class NetheriteFurnaceBlock extends AbstractFurnaceBlock {
 
     protected NetheriteFurnaceBlock(Settings settings) {
         super(settings);
@@ -51,7 +46,7 @@ public class NetheriteFurnaceBlock extends AbstractGenericFurnaceBlock {
     }
 
     @Override
-    protected MapCodec<? extends AbstractGenericFurnaceBlock> getCodec() {
+    protected MapCodec<? extends AbstractFurnaceBlock> getCodec() {
         return createCodec(NetheriteFurnaceBlock::new);
     }
 
@@ -84,19 +79,14 @@ public class NetheriteFurnaceBlock extends AbstractGenericFurnaceBlock {
             world.addParticle(ParticleTypes.SOUL_FIRE_FLAME, d + i, e + j, f + k, 0.0, 0.0, 0.0);
         }
     }
-
-    @Override
-    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        return super.onUse(state, world, pos, player, hit);
-    }
-
     @Override
     public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType options) {
-        AbstractGenericFurnaceBlock.appendTooltip(Ref.minusTotalCookTimeNetherite,tooltip);
-        tooltip.add(Text.translatable("tooltip.foxfurnace.xp",
-                        Text.literal("Shift + Right Click").setStyle(Style.EMPTY.withBold(true).withItalic(true)))
-                .withColor(Colors.RED));
         super.appendTooltip(stack, context, tooltip, options);
-    }
+        float speedPercentage = (200.0f / (200 - Ref.minusTotalCookTimeNetherite)) * 100;
 
+        String formattedSpeed = String.format("%.1f%%", speedPercentage);
+
+        tooltip.add(Text.translatable("tooltip.foxfurnace.speed", formattedSpeed)
+                .formatted(Formatting.GRAY));
+    }
 }

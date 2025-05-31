@@ -10,6 +10,7 @@ import net.piofox4.foxfurnace.block.ModBlocks;
 import net.piofox4.foxfurnace.config.ModConfig;
 import net.piofox4.foxfurnace.item.ModItemGroups;
 import net.piofox4.foxfurnace.item.ModItems;
+import net.piofox4.foxfurnace.util.FurnaceSpeedManager;
 import net.piofox4.foxfurnace.util.ModLootTableModifiers;
 import net.piofox4.foxfurnace.util.Ref;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ public class FoxFurnace implements ModInitializer {
 		Ref.getSettings();
 		configHolder.registerSaveListener((holder, config) -> {
 			Ref.getSettings();
+			FurnaceSpeedManager.updateFurnaceSpeedMap();
 			return ActionResult.SUCCESS;
 		});
 	}

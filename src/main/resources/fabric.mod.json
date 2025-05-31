@@ -28,6 +28,9 @@
 			"net.piofox4.foxfurnace.config.ConfigEntry"
 		]
 	},
+	"mixins": [
+		"foxfurnace.mixins.json"
+	],
 	"depends": {
 		"fabricloader": ">=0.16.9",
 		"minecraft": "~1.21.1",
